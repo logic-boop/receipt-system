@@ -1,26 +1,66 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* 1. Tell Tailwind v4 to observe manual toggles using the .dark class on the <html> element */
+@variant dark (&:where(.dark, .dark *));
 
-@theme inline {
+/* 2. Setup your theme tokens correctly (removed the "inline" modifier syntax) */
+@theme {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui;
   --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular;
 }
 
+/* 3. Global CSS variable assignments for Light Mode */
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+/* 4. Global CSS variable assignments for Dark Mode */
+.dark {
+  --background: #0a0a0a;
+  --foreground: #ededed;
+}
+
+/* 5. Fallback configuration to honor system theme preference if the user hasn't toggled manually */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not(.light) {
     --background: #0a0a0a;
     --foreground: #ededed;
   }
 }
 
+/* 6. Base Element Styles applying your variables and font family tokens */
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
+}
+
+/* 7. Native CSS Browser Print Rules Engine */
+@media print {
+  /* Hide the entire website UI layout structure */
+  body * {
+    visibility: hidden;
+  }
+  
+  /* Select only the dedicated print container block and force it visible */
+  .print-only-canvas,
+  .print-only-canvas * {
+    visibility: visible;
+  }
+  
+  /* Lock the printing container position straight to the top-left corner */
+  .print-only-canvas {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    max-width: 100% !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
 }
